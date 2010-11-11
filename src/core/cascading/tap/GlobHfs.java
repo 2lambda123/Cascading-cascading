@@ -91,7 +91,7 @@ public class GlobHfs extends MultiSourceTap
    */
   public GlobHfs( Scheme scheme, String pathPattern, PathFilter pathFilter )
     {
-      this( scheme, pathPattern, null, false );
+      this( scheme, pathPattern, pathFilter, false );
     }
 
   /**
