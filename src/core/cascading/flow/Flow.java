@@ -116,6 +116,8 @@ public class Flow implements Runnable
   private Map<String, Tap> traps;
   /** Field preserveTemporaryFiles */
   private boolean preserveTemporaryFiles = false;
+  /** Field skipModifiedCheckOnReplaceOrUpdate */
+  private boolean skipModifiedCheckOnReplaceOrUpdate = true;
   /** Field stopJobsOnExit */
   protected boolean stopJobsOnExit = true;
 
@@ -141,6 +143,14 @@ public class Flow implements Runnable
   private transient ExecutorService executor;
   /** Field shutdownHook */
   private transient Thread shutdownHook;
+
+  public void setSkipModifiedCheckOnReplaceOrUpdate(boolean check) {
+      skipModifiedCheckOnReplaceOrUpdate = check;
+  }
+
+  public boolean getSkipModifiedCheckOnReplaceOrUpdate() {
+      return skipModifiedCheckOnReplaceOrUpdate;
+  }
 
   /**
    * Property preserveTemporaryFiles forces the Flow instance to keep any temporary intermediate data sets. Useful
@@ -684,7 +694,7 @@ public class Flow implements Runnable
 
     for( Tap sink : sinks.values() )
       {
-      if( sink.isReplace() || sink.isUpdate() )
+      if( skipModifiedCheckOnReplaceOrUpdate && (sink.isReplace() || sink.isUpdate()) )
         sinkModified = -1L;
       else
         {

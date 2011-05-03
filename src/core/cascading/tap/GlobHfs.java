@@ -60,6 +60,8 @@ public class GlobHfs extends MultiSourceTap
   private String pathPattern;
   /** Field pathFilter */
   private PathFilter pathFilter;
+  /** Field includeOnlyDirectories */
+  private boolean includeOnlyDirectories;
 
   /**
    * Constructor GlobHfs creates a new GlobHfs instance.
@@ -70,7 +72,20 @@ public class GlobHfs extends MultiSourceTap
   @ConstructorProperties({"scheme", "pathPattern"})
   public GlobHfs( Scheme scheme, String pathPattern )
     {
-    this( scheme, pathPattern, null );
+    this( scheme, pathPattern, null, false );
+    }
+
+  /**
+   * Constructor GlobHfs creates a new GlobHfs instance.
+   *
+   * @param scheme             of type Scheme
+   * @param pathPattern        of type String
+   * @param includeOnlyDirectories of type boolean
+   */
+  @ConstructorProperties({"scheme", "pathPattern"})
+  public GlobHfs( Scheme scheme, String pathPattern, boolean includeOnlyDirectories)
+    {
+    this( scheme, pathPattern, null, includeOnlyDirectories );
     }
 
   /**
@@ -80,12 +95,26 @@ public class GlobHfs extends MultiSourceTap
    * @param pathPattern of type String
    * @param pathFilter  of type PathFilter
    */
-  @ConstructorProperties({"scheme", "pathPattern", "pathFilter"})
   public GlobHfs( Scheme scheme, String pathPattern, PathFilter pathFilter )
+    {
+      this( scheme, pathPattern, pathFilter, false );
+    }
+
+  /**
+   * Constructor GlobHfs creates a new GlobHfs instance.
+   *
+   * @param scheme             of type Scheme
+   * @param pathPattern        of type String
+   * @param pathFilter         of type PathFilter
+   * @param includeOnlyDirectories of type boolean
+   */
+  @ConstructorProperties({"scheme", "pathPattern", "pathFilter"})
+  public GlobHfs( Scheme scheme, String pathPattern, PathFilter pathFilter, boolean includeOnlyDirectories )
     {
     super( scheme );
     this.pathPattern = pathPattern;
     this.pathFilter = pathFilter;
+    this.includeOnlyDirectories = includeOnlyDirectories;
     }
 
   @Override
@@ -126,7 +155,7 @@ public class GlobHfs extends MultiSourceTap
 
     for( int i = 0; i < statusList.length; i++ )
       {
-      if( statusList[ i ].getLen() != 0 )
+      if( (includeOnlyDirectories && statusList[ i ].isDir()) || ( !includeOnlyDirectories && statusList[ i ].getLen() != 0 ) )
         notEmpty.add( new Hfs( getScheme(), statusList[ i ].getPath().toString() ) );
       }
 
