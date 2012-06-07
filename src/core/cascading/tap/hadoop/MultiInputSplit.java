@@ -65,6 +65,13 @@ public class MultiInputSplit implements InputSplit, JobConfigurable
     {
     this.inputSplit = inputSplit;
     this.config = config;
+
+    // reduce size of config map
+    if((this.inputSplit instanceof FileSplit)
+            && ((FileSplit) this.inputSplit).getPath() != null
+            && (this.config.containsKey("mapred.input.dir")) ) {
+        this.config.put("mapred.input.dir", ((FileSplit) this.inputSplit).getPath().toString());
+    }
     }
 
   public MultiInputSplit()
