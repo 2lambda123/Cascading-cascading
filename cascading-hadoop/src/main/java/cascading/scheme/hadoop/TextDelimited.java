@@ -97,8 +97,6 @@ public class TextDelimited extends TextLine
   private boolean skipHeader;
   private final boolean writeHeader;
 
-  private String charsetName = DEFAULT_CHARSET;
-
   /**
    * Constructor TextDelimited creates a new TextDelimited instance sourcing {@link Fields#UNKNOWN}, sinking
    * {@link Fields#ALL} and using TAB as the default delimiter.
