@@ -452,7 +452,7 @@ public abstract class Scheme<Config, Input, Output, SourceContext, SinkContext> 
     if( getSinkFields().equals( getSourceFields() ) )
       return getClass().getSimpleName() + "[" + getSourceFields().print() + "]";
     else
-      return getClass().getSimpleName() + "[" + getSourceFields().print() + "->" + getSinkFields().print() + "]";
+      return getClass().getSimpleName() + "[" + getSourceFields().print() + " ->" + getSinkFields().print() + "]";
     }
 
   public int hashCode()

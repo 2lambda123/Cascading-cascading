@@ -22,6 +22,7 @@ dependencies {
   compile group: 'thirdparty', name: 'jgrapht-jdk1.6', version: '0.8.1'
   compile group: 'riffle', name: 'riffle', version: '0.1-dev'
   compile group: 'org.codehaus.janino', name: 'janino', version: '2.6.1'
+  compile group: 'commons-lang', name: 'commons-lang', version: '2.3'
 
   // this prevents a transitive dependency until it is required downstream
   providedCompile group: 'org.slf4j', name: 'slf4j-api', version: '1.6.1'
