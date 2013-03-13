@@ -531,6 +531,59 @@ public class Util
     new DOTExporter( vertexIdProvider, vertexNameProvider, edgeNameProvider ).export( writer, graph );
     }
 
+  /**
+   * Method wrapWord inserts '\n' to the line of text written to DOT
+   *
+   * @param str    the string to wrap
+   * @return String
+   */
+  public static String wrapWord( String str )
+    {
+    int wrapLength = 48;
+    int inputLineLength = str.length();
+    int offset = 0;
+    StringBuilder wrappedLine = new StringBuilder( inputLineLength + 32 );
+    String newLine = "\\n";
+    while ( ( inputLineLength - offset ) > wrapLength )
+      {
+        if ( str.charAt( offset ) == ' ' )
+           {
+             offset++;
+             continue;
+           }
+        int spaceToWrapAt = str.lastIndexOf( ' ', wrapLength + offset );
+        //str may contain new line character, look ahead and backward
+        int newLineBefore = str.lastIndexOf( newLine, wrapLength + offset );
+        int newLineAfter = str.indexOf( newLine, wrapLength + offset );
+        if ( spaceToWrapAt >= offset )
+          {
+            wrappedLine.append( str.substring( offset, spaceToWrapAt ) );
+            if ( Math.abs( spaceToWrapAt - newLineBefore ) > 16 && Math.abs( spaceToWrapAt - newLineAfter ) > 16 && inputLineLength - spaceToWrapAt > 16)
+                wrappedLine.append( newLine );
+
+            offset = spaceToWrapAt + 1;
+          }
+        else
+          {// do not wrap really long word, just extend beyond limit
+            spaceToWrapAt = str.indexOf( ' ', wrapLength + offset );
+            if ( spaceToWrapAt >= 0 )
+              {
+                wrappedLine.append( str.substring( offset, spaceToWrapAt ) );
+                wrappedLine.append( newLine );
+                offset = spaceToWrapAt + 1;
+              }
+            else
+              {
+                wrappedLine.append(str.substring(offset));
+                offset = inputLineLength;
+              }
+          }
+      }
+    // Whatever is left in line is short enough to just pass through
+    wrappedLine.append(str.substring(offset));
+    return wrappedLine.toString();
+    }
+
   public static boolean isEmpty( String string )
     {
     return string == null || string.isEmpty();

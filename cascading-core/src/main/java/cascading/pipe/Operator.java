@@ -406,7 +406,7 @@ public abstract class Operator extends Pipe
   protected void printInternal( StringBuffer buffer, Scope scope )
     {
     super.printInternal( buffer, scope );
-    buffer.append( "[" );
+    buffer.append( " [" );
     BaseOperation.printOperationInternal( operation, buffer, scope );
     buffer.append( "]" );
     }
