@@ -66,6 +66,12 @@ public class MultiInputFormat implements InputFormat
 
     for( JobConf fromJob : fromJobs )
       {
+      // the input jobs must have the input format set: otherwise reject it
+      if( fromJob.get( "mapred.input.format.class" ) == null )
+        {
+        throw new CascadingException( "the job is missing the input format" );
+        }
+
       configs.add( HadoopUtil.getConfig( toJob, fromJob ) );
       Collections.addAll( allPaths, FileInputFormat.getInputPaths( fromJob ) );
 
