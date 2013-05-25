@@ -171,6 +171,8 @@ public class TupleEntrySchemeCollector<Config, Output> extends TupleEntryCollect
 
       try
         {
+        if( !prepared && tupleEntry != null )
+          prepare();
         if( prepared )
           scheme.sinkCleanup( flowProcess, sinkCall );
         }

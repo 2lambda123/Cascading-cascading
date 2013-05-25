@@ -77,6 +77,11 @@ public class MultiSinkTap<Child extends Tap, Config, Output> extends SinkTap<Con
         LOG.info( "opening for write: {}", tap.toString() );
 
         collectors[ i ] = tap.openForWrite( flowProcess.copyWith( mergedConf ), null );
+        if( tap.getSinkFields().isAll() )
+          {
+          Fields fields = getSinkFields();
+          collectors[ i ].setFields( fields );
+          }
         }
       }
 
@@ -247,13 +252,19 @@ public class MultiSinkTap<Child extends Tap, Config, Output> extends SinkTap<Con
 
     Set<Comparable> fieldNames = new LinkedHashSet<Comparable>();
 
+    boolean useAll = false;
     for( int i = 0; i < getTaps().length; i++ )
       {
-      for( Object o : getTaps()[ i ].getSinkFields() )
+      Fields fields = getTaps()[ i ].getSinkFields();
+      if ( fields.isAll() ) {
+        useAll = true;
+        break;
+      }
+      for( Object o : fields )
         fieldNames.add( (Comparable) o );
       }
 
-    Fields allFields = new Fields( fieldNames.toArray( new Comparable[ fieldNames.size() ] ) );
+    Fields allFields = useAll ? Fields.ALL : new Fields( fieldNames.toArray( new Comparable[ fieldNames.size() ] ) );
 
     setScheme( new NullScheme( allFields, allFields ) );
 
