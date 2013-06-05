@@ -174,7 +174,6 @@ public abstract class BaseFlow<Config> implements Flow<Config>
     setSinks( flowDef.getSinksCopy() );
     setTraps( flowDef.getTrapsCopy() );
     setCheckpoints( flowDef.getCheckpointsCopy() );
-    initFromProperties( properties );
     initFromTaps();
 
     retrieveSourceFields();
