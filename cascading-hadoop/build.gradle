@@ -21,6 +21,7 @@
 //ext.hadoopVersion = '0.20.2'
 //ext.hadoopVersion = '0.20.205.0' // missing maven deps
 ext.hadoopVersion = '1.0.4'  // missing maven deps
+//ext.hadoopVersion = '2.0.0-mr1-cdh4.3.0'   // Cloudera CDH 4.3.0
 
 if( System.properties[ 'hadoop.release.final' ] )
   hadoopVersion = System.properties[ 'hadoop.release.final' ]
@@ -66,6 +67,39 @@ if( hadoopVersion.startsWith( "0.20.205." ) )
     testRuntime 'javax.ws.rs:jsr311-api:1.1.1' // missed dep in hadoop, go figure
     testRuntime 'org.codehaus.jackson:jackson-core-asl:1.0.1'
     testRuntime 'org.codehaus.jackson:jackson-mapper-asl:1.0.1'
+  }
+}
+
+if( hadoopVersion.startsWith( "2.0.0-mr1-cdh4" ) )
+{
+  // CDH4 uses different versions for Hadoop core and other subprojects
+  ext.hadoopCommonVersion = hadoopVersion.replaceFirst('-mr1-', '-')
+  println "VER: $hadoopCommonVersion"
+
+  dependencies {
+    providedCompile( group: 'org.apache.hadoop', name: 'hadoop-common', version: hadoopCommonVersion ) {
+      exclude group: 'ant'
+      exclude group: 'junit'
+    }
+
+    providedCompile( group: 'org.apache.hadoop', name: 'hadoop-hdfs', version: hadoopCommonVersion ) {
+      exclude group: 'ant'
+      exclude group: 'junit'
+      exclude group: 'commons-daemon'
+    }
+
+    testCompile group: 'org.apache.hadoop', name: 'hadoop-common', version: hadoopCommonVersion
+    testCompile group: 'org.apache.hadoop', name: 'hadoop-common', version: hadoopCommonVersion, classifier: 'tests'
+
+    testCompile( group: 'org.apache.hadoop', name: 'hadoop-hdfs', version: hadoopCommonVersion ) {
+      exclude group: 'commons-daemon'
+    }
+
+    testCompile( group: 'org.apache.hadoop', name: 'hadoop-hdfs', version: hadoopCommonVersion, classifier: 'tests' ) {
+      exclude group: 'commons-daemon'
+    }
+
+    testRuntime group: 'commons-io', name: 'commons-io', version: '2.0.1'
   }
 }
 
