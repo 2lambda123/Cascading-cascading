@@ -97,7 +97,7 @@ public class TextDelimited extends Scheme<Properties, InputStream, OutputStream,
 
   private final boolean skipHeader;
   private final boolean writeHeader;
-  private final DelimitedParser delimitedParser;
+  protected final DelimitedParser delimitedParser;
   private String charsetName = DEFAULT_CHARSET;
 
   /**

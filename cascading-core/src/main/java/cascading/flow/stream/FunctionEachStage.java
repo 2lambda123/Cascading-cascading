@@ -71,7 +71,15 @@ public class FunctionEachStage extends EachStage
     @Override
     protected void collect( TupleEntry input ) throws IOException
       {
-      Tuple outgoing = outgoingBuilder.makeResult( incomingEntry.getTuple(), input.getTuple() );
+      Tuple outgoing;
+      // In cases where the Operation introduces new tuples to a flow which has
+      // received no rows, this will avoid a nasty NPE.  It may have some
+      // assumptions on the makeResult operation though.
+      if ( incomingEntry == null ) {
+        outgoing = outgoingBuilder.makeResult( input.getTuple(), input.getTuple() );
+      } else {
+        outgoing = outgoingBuilder.makeResult( incomingEntry.getTuple(), input.getTuple() );
+      }
 
       outgoingEntry.setTuple( outgoing );
 
