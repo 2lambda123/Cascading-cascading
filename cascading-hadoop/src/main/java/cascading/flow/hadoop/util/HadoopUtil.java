@@ -455,7 +455,17 @@ public class HadoopUtil
       }
     finally
       {
-      reader.close();
+       if( reader!=null )
+       {
+        try
+          {
+          reader.close();
+          }
+        catch ( Exception e )
+          {
+          LOG.error("close reader error",e);
+          }
+       }
       }
     }
 
