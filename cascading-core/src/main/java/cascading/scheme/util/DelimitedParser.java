@@ -56,6 +56,8 @@ public class DelimitedParser implements Serializable
   static final String CLEAN_REGEX_FORMAT = "^(?:%1$s)(.*)(?:%1$s)$";
   /** Field ESCAPE_REGEX_FORMAT */
   static final String ESCAPE_REGEX_FORMAT = "(%1$s%1$s)";
+  /** Field INTERVAL_LEN_NOT_MATCH */
+  static final int INTERVAL_LEN_NOT_MATCH = 10000;
 
   /** Field sourceFields */
   private Fields sourceFields;
@@ -82,6 +84,9 @@ public class DelimitedParser implements Serializable
   boolean safe = true;
   /** skipHeader */
   boolean skipHeader;
+  /** Field lengthNotMatchCount*/
+  int lengthNotMatchCount = 0;
+
 
   public DelimitedParser( String delimiter, String quote, Class[] types, boolean strict, boolean safe, boolean skipHeader, Fields sourceFields, Fields sinkFields )
     {
@@ -291,12 +296,18 @@ public class DelimitedParser implements Serializable
 
     if( numValues != 0 && split.length != numValues )
       {
-      String message = "did not parse correct number of values from input data, expected: " + numValues + ", got: " + split.length + ":" + Util.join( ",", (String[]) split );
+      String message = null;
+
+      if( enforceStrict || (lengthNotMatchCount++ % INTERVAL_LEN_NOT_MATCH) == 0 )
+        {
+        message = "did not parse correct number of values from input data, expected: " + numValues + ", got: " + split.length + ":" + Util.join( ",", (String[]) split );
+        }
 
       if( enforceStrict )
         throw new TapException( message, new Tuple( line ) ); // trap actual line data
 
-      LOG.warn( message );
+      if( message != null )
+        LOG.warn( "lengthNotMatchCount:{},{}",lengthNotMatchCount,message );
 
       Object[] array = new Object[ Math.max( numValues, split.length ) ];
       Arrays.fill( array, "" );
