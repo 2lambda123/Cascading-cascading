@@ -24,7 +24,9 @@ import java.beans.ConstructorProperties;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 import cascading.flow.FlowProcess;
 import cascading.scheme.Scheme;
@@ -384,19 +386,12 @@ public class Hfs extends Tap<JobConf, RecordReader, OutputCollector> implements 
 
   protected static void verifyNoDuplicates( JobConf conf )
     {
-    Path[] inputPaths = FileInputFormat.getInputPaths( conf );
-
-    for( int i = 0; i < inputPaths.length - 1; i++ )
+    Set<Path> inputPathSet = new HashSet<Path>();
+    for( Path inputPath : FileInputFormat.getInputPaths( conf ) )
       {
-      Path lhs = inputPaths[ i ];
-
-      for( int j = i + 1; j < inputPaths.length; j++ )
-        {
-        Path rhs = inputPaths[ j ];
-
-        if( rhs.equals( lhs ) )
-          throw new TapException( "may not add duplicate paths, found: " + rhs );
-        }
+      if( inputPathSet.contains( inputPath ) )
+        throw new TapException( "may not add duplicate paths, found: " + inputPath );
+      inputPathSet.add( inputPath );
       }
     }
 
