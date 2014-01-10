@@ -44,6 +44,7 @@ import cascading.operation.Identity;
 import cascading.operation.aggregator.Count;
 import cascading.operation.aggregator.First;
 import cascading.operation.aggregator.MaxValue;
+import cascading.operation.aggregator.Sum;
 import cascading.operation.assertion.AssertNotNull;
 import cascading.operation.assertion.AssertNull;
 import cascading.operation.expression.ExpressionFilter;
@@ -1831,4 +1832,40 @@ public class BuildJobsHadoopTest extends CascadingTestCase
 //      exception.printStackTrace();
       }
     }
+
+  @Test
+  public void testManyJoins() 
+    {
+    int n = 100;
+    Map sources = new HashMap();
+    Map sinks = new HashMap();
+    Pipe[] pipes = new Pipe[n];
+
+    for (int i = 0; i < n; i++) 
+      {
+      String nameIn = "in" + i;
+      String nameOut = "out" + i;
+      Pipe pipe = new Pipe(nameIn);
+      sources.put(nameIn, new Hfs( new TextLine( new Fields("key" + i) ), "foo/in" + i ));
+      sinks.put(nameOut, new Hfs( new TextLine(), "foo/out" + i ) );
+
+      // For every pipe except the first one, join it with the
+      // previous pipe and aggregate some field from that pipe onto
+      // this one.
+      if (i > 0) 
+        {
+        pipe = new CoGroup(pipes[i - 1], new Fields("key" + (i - 1)),
+                           pipe,         new Fields("key" + i));
+        pipe = new Every( pipe, new Fields("key" + (i - 1)), new Sum());
+        }
+
+      pipes[i] = new Pipe(nameOut, pipe);
+      }
+    // long start = System.currentTimeMillis();
+    Flow flow = new HadoopFlowConnector().connect(sources, sinks, pipes);
+    // long end = System.currentTimeMillis();
+    // System.out.printf("n = %d: %.03f seconds\n", n, (end - start) / 1000.0);
+    }
   }
+
+
