@@ -54,6 +54,7 @@ import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.LocalFileSystem;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.mapred.JobConf;
+import org.apache.hadoop.security.Credentials;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -101,9 +102,24 @@ public class HadoopUtil
       new Object[]{levelObject}, new Class[]{levelObject.getClass()} );
     }
 
+  public static JobConf copyJobConf(JobConf parentJobConf)
+  {
+    if (parentJobConf == null) {
+      throw new NullPointerException("parentJobConf");
+    }
+
+    // The JobConf(JobConf) constructor causes derived JobConfs to share Credentials. We want to avoid this, in
+    // case those Credentials are mutated later on down the road (which they will be, during job submission, in
+    // separate threads!). Using the JobConf(Configuration) constructor avoids Credentials-sharing.
+    final Configuration configurationCopy = new Configuration(parentJobConf);
+    final JobConf jobConf = new JobConf(configurationCopy);
+    jobConf.getCredentials().addAll(parentJobConf.getCredentials());
+    return jobConf;
+  }
+
   public static JobConf createJobConf( Map<Object, Object> properties, JobConf defaultJobconf )
     {
-    JobConf jobConf = defaultJobconf == null ? new JobConf() : new JobConf( defaultJobconf );
+    JobConf jobConf = defaultJobconf == null ? new JobConf() : HadoopUtil.copyJobConf( defaultJobconf );
 
     if( properties == null )
       return jobConf;
@@ -362,7 +378,7 @@ public class HadoopUtil
 
   public static JobConf mergeConf( JobConf job, Map<String, String> config, boolean directly )
     {
-    JobConf currentConf = directly ? job : new JobConf( job );
+    JobConf currentConf = directly ? job : HadoopUtil.copyJobConf( job );
 
     for( String key : config.keySet() )
       {
