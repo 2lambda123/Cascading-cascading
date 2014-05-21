@@ -52,6 +52,7 @@ import cascading.tuple.hadoop.util.IndexTupleCoGroupingComparator;
 import cascading.tuple.hadoop.util.ReverseGroupingSortingComparator;
 import cascading.tuple.hadoop.util.ReverseTupleComparator;
 import cascading.tuple.hadoop.util.TupleComparator;
+import cascading.tuple.hadoop.util.TuplePartitioner;
 import cascading.tuple.io.IndexTuple;
 import cascading.tuple.io.TuplePair;
 import cascading.util.Util;
@@ -124,6 +125,7 @@ public class HadoopFlowStep extends BaseFlowStep<JobConf>
       // must set map output defaults when performing a reduce
       conf.setMapOutputKeyClass( Tuple.class );
       conf.setMapOutputValueClass( Tuple.class );
+      conf.setPartitionerClass( TuplePartitioner.class );
 
       // handles the case the groupby sort should be reversed
       if( getGroup().isSortReversed() )
