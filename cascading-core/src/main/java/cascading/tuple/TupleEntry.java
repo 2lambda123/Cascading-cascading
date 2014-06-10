@@ -560,7 +560,7 @@ public class TupleEntry
     }
 
   /**
-   * Method set sets the value in the given field or position.
+   * Method setObject sets the value in the given field or position.
    *
    * @param fieldName field name or position to set
    * @param value     of type Comparable
