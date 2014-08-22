@@ -1492,7 +1492,7 @@ public class Fields implements Comparable, Iterable<Comparable>, Serializable, C
     }
 
   /**
-   * Method printLong returns a String representation of this instance along with the size.
+   * Method printVerbose returns a String representation of this instance along with the size.
    *
    * @return String
    */
