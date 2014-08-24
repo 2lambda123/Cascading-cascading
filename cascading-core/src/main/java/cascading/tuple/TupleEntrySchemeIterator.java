@@ -22,6 +22,7 @@ package cascading.tuple;
 
 import java.io.Closeable;
 import java.io.IOException;
+import java.io.EOFException;
 
 import cascading.flow.FlowProcess;
 import cascading.scheme.ConcreteCall;
@@ -124,7 +125,14 @@ public class TupleEntrySchemeIterator<Config, Input> extends TupleEntryIterator
       if( identifier == null || identifier.isEmpty() )
         identifier = "'unknown'";
 
-      currentException = new TupleException( "unable to read from input identifier: " + identifier, exception );
+      String message;
+      if (exception instanceof EOFException) {
+          message = "Unexpected end of file" + identifier + ", will closing file now";
+          isComplete = true;
+      } else {
+          message = "unable to read from input identifier: " + identifier;
+      }
+      currentException = new TupleException( message, exception );
       return true;
       }
 

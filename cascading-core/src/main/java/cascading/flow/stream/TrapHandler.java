@@ -21,6 +21,7 @@
 package cascading.flow.stream;
 
 import java.io.IOException;
+import java.io.EOFException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -121,6 +122,11 @@ public class TrapHandler
 
     if( cause instanceof OutOfMemoryError )
       handleReThrowableException( "caught OutOfMemoryException, will not trap, rethrowing", cause );
+
+    if (throwable.getCause() instanceof EOFException) {
+        LOG.warn("exception trap on branch: '" + trapName + ", unexpected end of file", throwable);
+        return;
+    }
 
     if( trap == null )
       handleReThrowableException( "caught Throwable, no trap available, rethrowing", throwable );
