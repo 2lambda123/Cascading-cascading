@@ -52,7 +52,7 @@ import org.apache.hadoop.mapred.RecordReader;
  * <p/>
  * It is assumed if sink/source {@code fields} is set to either {@link Fields#ALL} or {@link Fields#UNKNOWN} and
  * {@code skipHeader} or {@code hasHeader} is {@code true}, the field names will be retrieved from the header of the
- * file and used during planning. The header will parsed with the same rules as the body of the file.
+ * file and used during planning. The header will be parsed with the same rules as the body of the file.
  * <p/>
  * By default headers are not skipped.
  * <p/>
