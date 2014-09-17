@@ -41,7 +41,7 @@ import org.slf4j.LoggerFactory;
  * If type information is provided on the Fields instance, all setters on this class will use that information to
  * coerce the given object to the expected type.
  * <p/>
- * For example, if position is is of type {@code long}, then {@code entry.setString(0, "9" )} will coerce the "9" to a
+ * For example, if position is of type {@code long}, then {@code entry.setString(0, "9" )} will coerce the "9" to a
  * long {@code 9}. Thus, {@code entry.getObject(0) == 9l}.
  * <p/>
  * No coercion is performed with the {@link #getObject(Comparable)} and {@link #getObject(int)} methods.
