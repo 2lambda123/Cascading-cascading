@@ -60,7 +60,7 @@ public class TrapHandler
         }
       catch( IOException exception )
         {
-        throw new DuctException( exception );
+        throw new UntrappableDuctException( "While collecting in trap " + trap.getIdentifier() + ".", exception );
         }
       }
 
@@ -121,6 +121,9 @@ public class TrapHandler
 
     if( cause instanceof OutOfMemoryError )
       handleReThrowableException( "caught OutOfMemoryException, will not trap, rethrowing", cause );
+
+    if( cause instanceof UntrappableDuctException )
+      handleReThrowableException( "caught UntrappableDuctException, will not trap, rethrowing", cause );
 
     if( trap == null )
       handleReThrowableException( "caught Throwable, no trap available, rethrowing", throwable );
