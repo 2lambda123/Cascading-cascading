@@ -391,4 +391,35 @@ public class TrapPlatformTest extends PlatformTestCase
 
     validateLength( flow.openTrap(), 1 );
     }
+
+  @Test(expected = CascadingException.class)
+  public void testTrapFailure() throws Exception
+    {
+    getPlatform().copyFromLocal( inputFileApache );
+
+    // Input
+    FlowDef flowDef = new FlowDef();
+    Tap source = getPlatform().getTextFile( inputFileApache );
+    flowDef.addSource( "firstPipe", source );
+
+    // First pipe
+    Pipe pipe = new Each( new Pipe("firstPipe"), new Fields( "line" ), new RegexParser( new Fields( "ip" ), "^[^ ]*" ), new Fields( "ip" ) );
+    Tap trap1 = getPlatform().getTextFile( getOutputPath( "trapFailure/firstTrap" ), SinkMode.REPLACE );
+    flowDef.addTrap( "firstPipe", trap1 );
+
+    // Second pipe and trap
+    // An exception is thrown for all tuples that pass through this pipe, but the trap's tap can't be written to
+    pipe = new Each( new Pipe("secondPipe", pipe), new Fields( "ip" ), new TestFunction( new Fields( "test" ), null ), Fields.ALL );
+    Tap trap2 = getPlatform().getTextFile( "/invalid/path.txt", SinkMode.REPLACE );
+    flowDef.addTrap( "secondPipe", trap2 );
+
+    // Output
+    Tap sink = getPlatform().getTextFile( getOutputPath( "trapFailure/tap" ), SinkMode.REPLACE );
+    flowDef.addTail( pipe );
+    flowDef.addSink( pipe, sink );
+
+    Flow flow = getPlatform().getFlowConnector().connect( flowDef );
+
+    flow.complete();
+    }
   }
