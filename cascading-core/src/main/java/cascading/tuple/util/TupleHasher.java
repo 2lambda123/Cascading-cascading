@@ -114,18 +114,25 @@ public class TupleHasher implements Serializable
 
   public final int hashCode( Tuple tuple )
     {
-    int hash = 1;
-
     List<Object> elements = Tuple.elements( tuple );
+    int size = elements.size();
 
-    for( int i = 0; i < elements.size(); i++ )
+    if( size > 0 )
       {
-      Object element = elements.get( i );
+      Object element0 = elements.get(0);
+      int hash = element0 != null ? hashers[ 0 ].hashCode( element0 ) : 0;
 
-      hash = 31 * hash + ( element != null ? hashers[ i % hashers.length ].hashCode( element ) : 0 );
+      for( int i = 1; i < size; i++ )
+        {
+        Object element = elements.get( i );
+
+        hash = 31 * hash + ( element != null ? hashers[ i % hashers.length ].hashCode( element ) : 0 );
+        }
+
+        return hash;
       }
-
-    return hash;
+    else
+      return 0;
     }
 
   private static class ObjectHasher implements Hasher<Object>
