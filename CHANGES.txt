@@ -1,5 +1,39 @@
 Cascading Change Log
 
+3.1.0 [unreleased]
+
+  Added STATEMENT_TYPE to c.f.FlowDescriptors.
+
+  Fixed issue on Apache Tez where multiple prior splits and subsequent splicing back into a c.p.HashJoin could create an
+  invalid plan.
+
+  Updated Apache Hadoop 2 based sub-projects to 2.7.1.
+
+  Added new c.f.FlowStep#getFlowStepDescriptor and c.f.FlowStepDescriptors to store additional metadata on c.f.FlowStep
+  instances.
+
+  Updated c.f.t.p.r.t.BoundaryBalanceGroupSplitHashJoinTransformer to insert After and not AfterEachEdge.
+
+  Fixed c.f.p.i.t.InsertionGraphTransformer to properly place insertions.
+
+  Created cascading-expression sub-project to isolate all 'expression' operations based on Janino and it isolate
+  the Janino dependency. A dependency to cascading-expression must be added to projects that depend on the isolated
+  classes.
+
+  Created cascading-hadoop2-io sub-project to isolate Hadoop 2.x HDFS and serialization dependencies and updated
+  cascading-hadoop2-mr1 and cascading-hadoop2-tez to depend on cascading-hadoop2-io.
+
+  Updated c.t.Fields to provide a constructor accepting type information, and a method #applyFields() to update
+  field names.
+
+  Added support for configuring split combining across supported platforms through the c.f.FlowRuntimeProps
+  "cascading.flow.runtime.splits.combine" property. If enabled, will induce c.t.h.Hfs to enable combined files
+  support on the MapReduce platforms.
+
+  Updated Hadoop, Hadoop2, and Tez serialization and comparator frameworks to fully leverage declared field type
+  information to reduce serialized data and perform bitwise equality comparisons. See c.t.h.TupleSerializationProps to
+  disable bitwise comparisons.
+
 3.0.2
 
   Updated Apache Tez to 0.6.2 to prevent deadlocks in complex DAGs. Note this release is incompatible with Tez 0.6.1.
@@ -32,9 +66,6 @@ Cascading Change Log
   services.
 
   Fixed issue where c.s.FlowStepStats#getProcessStatusURL() always returned null for Apache MapReduce and Tez platforms.
-
-  Fixed issue on Apache Tez where a split before and subsequent splicing back into a c.p.HashJoin could create an
-  invalid plan.
 
   Fixed issue with c.t.u.TupleHasher#ObjectHasher not being serializable.
 

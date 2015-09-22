@@ -263,6 +263,9 @@ public class ElementGraphs
 
   public static Iterator<FlowElement> getTopologicalIterator( ElementGraph graph )
     {
+    if( graph == null )
+      return Collections.emptyIterator();
+
     return new TopologicalOrderIterator<>( directed( graph ) );
     }
 
@@ -479,7 +482,7 @@ public class ElementGraphs
       writer.close();
       return true;
       }
-    catch( IOException exception )
+    catch( NullPointerException | IOException exception )
       {
       LOG.error( "failed printing graph to: {}, with exception: {}", filename, exception );
       }
@@ -567,6 +570,26 @@ public class ElementGraphs
 
       graph.addEdge( target, flowElement, scope ); // add scope back
       }
+    }
+
+  public static void insertFlowElementBetweenEdge( ElementGraph elementGraph, Scope previousEdge, FlowElement newElement )
+    {
+    FlowElement previousElement = elementGraph.getEdgeSource( previousEdge );
+    FlowElement nextElement = elementGraph.getEdgeTarget( previousEdge );
+
+    elementGraph.addVertex( newElement );
+
+    // add edge between previous and new
+    elementGraph.addEdge( previousElement, newElement, new Scope( previousEdge ) );
+
+    // add edge between new and next
+    Scope scope = new Scope( previousEdge );
+
+    scope.setOrdinal( previousEdge.getOrdinal() );
+    elementGraph.addEdge( newElement, nextElement, scope );
+
+    // remove previous edge
+    elementGraph.removeEdge( previousElement, nextElement );
     }
 
   public static void addSources( BaseFlowStep flowStep, ElementGraph elementGraph, Set<Tap> sources )
@@ -838,7 +861,7 @@ public class ElementGraphs
 
       Iterator<Scope> iterator = elementGraph.outgoingEdgesOf( object ).iterator();
 
-      if( object instanceof Tap || !iterator.hasNext() )
+      if( !( object instanceof Pipe ) || !iterator.hasNext() )
         {
         label = object.toString().replaceAll( "\"", "\'" ).replaceAll( "(\\)|\\])(\\[)", "$1|$2" ).replaceAll( "(^[^(\\[]+)(\\(|\\[)", "$1|$2" );
         }

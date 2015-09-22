@@ -57,6 +57,12 @@ public abstract class BaseElementGraph implements ElementGraph, Serializable
     this.graph = graph;
     }
 
+  protected void copyFrom( BaseElementGraph elementGraph )
+    {
+    Graphs.addAllVertices( graph, elementGraph.vertexSet() );
+    Graphs.addAllEdges( graph, elementGraph.graph, elementGraph.edgeSet() );
+    }
+
   public boolean containsEdge( FlowElement sourceVertex, FlowElement targetVertex )
     {
     return graph.containsEdge( sourceVertex, targetVertex );
@@ -95,6 +101,34 @@ public abstract class BaseElementGraph implements ElementGraph, Serializable
   public boolean addEdge( FlowElement sourceVertex, FlowElement targetVertex, Scope scope )
     {
     return graph.addEdge( sourceVertex, targetVertex, scope );
+    }
+
+  @Override
+  public boolean addHeadVertex( FlowElement flowElement )
+    {
+    if( !graph.containsVertex( Extent.head ) )
+      graph.addVertex( Extent.head );
+
+    boolean result = true;
+
+    if( !graph.containsVertex( flowElement ) )
+      result = graph.addVertex( flowElement );
+
+    return result && graph.addEdge( Extent.head, flowElement ) != null;
+    }
+
+  @Override
+  public boolean addTailVertex( FlowElement flowElement )
+    {
+    if( !graph.containsVertex( Extent.tail ) )
+      graph.addVertex( Extent.tail );
+
+    boolean result = true;
+
+    if( !graph.containsVertex( flowElement ) )
+      result = graph.addVertex( flowElement );
+
+    return result && graph.addEdge( flowElement, Extent.tail ) != null;
     }
 
   public boolean addVertex( FlowElement flowElement )

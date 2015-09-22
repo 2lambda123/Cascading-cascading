@@ -118,22 +118,45 @@ public abstract class BaseFlowStep<Config> implements FlowStep<Config>, ProcessL
 
   private transient FlowStepJob<Config> flowStepJob;
 
-  // for testing
+  /** optional metadata about the FlowStep */
+  private Map<String, String> flowStepDescriptor = Collections.emptyMap();
+
   protected BaseFlowStep( String name, int ordinal )
+    {
+    this( name, ordinal, null );
+    }
+
+  protected BaseFlowStep( String name, int ordinal, Map<String, String> flowStepDescriptor )
+    {
+    this( name, ordinal, null, flowStepDescriptor );
+    }
+
+  protected BaseFlowStep( String name, int ordinal, FlowNodeGraph flowNodeGraph, Map<String, String> flowStepDescriptor )
     {
     this.id = Util.createUniqueIDWhichStartsWithAChar(); // timeline server cannot filter strings that start with a number
     setName( name );
     this.ordinal = ordinal;
 
     this.elementGraph = null;
-    this.flowNodeGraph = null;
+    this.flowNodeGraph = flowNodeGraph;
+
+    if( flowStepDescriptor != null )
+      this.flowStepDescriptor = flowStepDescriptor;
     }
 
   protected BaseFlowStep( ElementGraph elementStepGraph, FlowNodeGraph flowNodeGraph )
     {
+    this( elementStepGraph, flowNodeGraph, null );
+    }
+
+  protected BaseFlowStep( ElementGraph elementStepGraph, FlowNodeGraph flowNodeGraph, Map<String, String> flowStepDescriptor )
+    {
     this.id = Util.createUniqueIDWhichStartsWithAChar(); // timeline server cannot filter strings that start with a number
     this.elementGraph = elementStepGraph;
     this.flowNodeGraph = flowNodeGraph; // TODO: verify no missing elements in the union of the node graphs
+
+    if( flowStepDescriptor != null )
+      this.flowStepDescriptor = flowStepDescriptor;
 
     configure();
     }
@@ -178,6 +201,12 @@ public abstract class BaseFlowStep<Config> implements FlowStep<Config>, ProcessL
       throw new IllegalArgumentException( "step name may not be null or empty" );
 
     this.name = name;
+    }
+
+  @Override
+  public Map<String, String> getFlowStepDescriptor()
+    {
+    return Collections.unmodifiableMap( flowStepDescriptor );
     }
 
   @Override
@@ -841,6 +870,9 @@ public abstract class BaseFlowStep<Config> implements FlowStep<Config>, ProcessL
     {
     CascadingServices services = flowProcess.getCurrentSession().getCascadingServices();
 
+    if( services == null )
+      return ClientState.NULL;
+
     return services.createClientState( getID() );
     }
 
@@ -897,8 +929,8 @@ public abstract class BaseFlowStep<Config> implements FlowStep<Config>, ProcessL
             continue;
             }
 
-          if( element.hasNodeConfigDef() )
-            element.getNodeConfigDef().apply( mode, setter );
+          if( element instanceof ScopedElement && ( (ScopedElement) element ).hasNodeConfigDef() )
+            ( (ScopedElement) element ).getNodeConfigDef().apply( mode, setter );
 
           // walk up the sub-assembly parent hierarchy
           if( element instanceof Pipe )
@@ -935,8 +967,8 @@ public abstract class BaseFlowStep<Config> implements FlowStep<Config>, ProcessL
 
         while( element != null )
           {
-          if( element.hasStepConfigDef() )
-            element.getStepConfigDef().apply( mode, setter );
+          if( element instanceof ScopedElement && ( (ScopedElement) element ).hasStepConfigDef() )
+            ( (ScopedElement) element ).getStepConfigDef().apply( mode, setter );
 
           // walk up the sub-assembly parent hierarchy
           if( element instanceof Pipe )
