@@ -311,7 +311,7 @@ public abstract class Scheme<Config, Input, Output, SourceContext, SinkContext> 
    * It is not intended to initialize resources that would be necessary during the execution of this
    * class, like a "formatter" or "parser".
    * <p/>
-   * See {@link #sourcePrepare(cascading.flow.FlowProcess, SourceCall)} if resources much be initialized
+   * See {@link #sourcePrepare(cascading.flow.FlowProcess, SourceCall)} if resources must be initialized
    * before use. And {@link #sourceCleanup(cascading.flow.FlowProcess, SourceCall)} if resources must be
    * destroyed after use.
    *
