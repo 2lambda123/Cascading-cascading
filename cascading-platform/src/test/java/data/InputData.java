@@ -52,6 +52,7 @@ public interface InputData
   String testDelimitedSpecialCharData = inputPath + "delimited-spec-char.txt";
   String testDelimitedExtraField = inputPath + "delimited-extra-field.txt";
   String testDelimitedProblematic = inputPath + "delimited-problematic.txt";
+  String testDataTypesInput = inputPath + "input.txt";
 
   String inputFileComments = inputPath + "comments+lower.txt";
 
