@@ -1288,7 +1288,7 @@ public class Splice extends Pipe
 
     if( map != null )
       {
-      buffer.append( "[by:" );
+      buffer.append( " [by:" );
 
       // important to retain incoming pipe order
       for( Map.Entry<String, Fields> entry : keyFieldsMap.entrySet() )

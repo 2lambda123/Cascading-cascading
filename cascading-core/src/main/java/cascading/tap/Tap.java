@@ -672,8 +672,8 @@ public abstract class Tap<Config, Input, Output> implements FlowElement, Seriali
   public String toString()
     {
     if( getIdentifier() != null )
-      return getClass().getSimpleName() + "[\"" + getScheme() + "\"]" + "[\"" + Util.sanitizeUrl( getIdentifier() ) + "\"]"; // sanitize
+      return getClass().getSimpleName() + "[\"" + getScheme() + "\"] " + "[\"" + Util.sanitizeUrl( getIdentifier() ) + "\"]"; // sanitize
     else
-      return getClass().getSimpleName() + "[\"" + getScheme() + "\"]" + "[not initialized]";
+      return getClass().getSimpleName() + "[\"" + getScheme() + "\"] " + "[not initialized]";
     }
   }

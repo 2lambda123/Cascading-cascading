@@ -473,7 +473,7 @@ public class Scope implements Serializable
       for( String name : keySelectors.keySet() )
         {
         if( buffer.length() != 0 )
-          buffer.append( "," );
+          buffer.append( ", " );
         buffer.append( name ).append( keySelectors.get( name ).printVerbose() );
         }
 
