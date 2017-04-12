@@ -493,17 +493,18 @@ public class ElementGraph extends SimpleDirectedGraph<FlowElement, Scope>
             }
 
           if( object instanceof Tap || object instanceof Extent )
-            return object.toString().replaceAll( "\"", "\'" );
+            return Util.wrapWord(object.toString().replaceAll("\"", "\'"));
 
           Scope scope = graph.outgoingEdgesOf( object ).iterator().next();
 
-          return ( (Pipe) object ).print( scope ).replaceAll( "\"", "\'" );
+          return Util.wrapWord((( (Pipe) object ).print( scope ).replaceAll( "\"", "\'" )));
           }
         }, new EdgeNameProvider<Scope>()
         {
         public String getEdgeName( Scope object )
           {
-          return object.toString().replaceAll( "\"", "\'" ).replaceAll( "\n", "\\\\n" ); // fix for newlines in graphviz
+           // fix for newlines in graphviz
+          return Util.wrapWord(object.toString().replaceAll( "\"", "\'" ).replaceAll( "\n", "\\\\n" ));
           }
         }
       );

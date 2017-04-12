@@ -46,6 +46,7 @@ import cascading.pipe.Pipe;
 import cascading.scheme.Scheme;
 import cascading.tap.MultiSourceTap;
 import cascading.tap.Tap;
+import org.apache.commons.lang.WordUtils;
 import org.jgrapht.ext.DOTExporter;
 import org.jgrapht.ext.EdgeNameProvider;
 import org.jgrapht.ext.IntegerNameProvider;
@@ -529,6 +530,17 @@ public class Util
   public static void writeDOT( Writer writer, SimpleDirectedGraph graph, IntegerNameProvider vertexIdProvider, VertexNameProvider vertexNameProvider, EdgeNameProvider edgeNameProvider )
     {
     new DOTExporter( vertexIdProvider, vertexNameProvider, edgeNameProvider ).export( writer, graph );
+    }
+
+  /**
+   * Method wrapWord inserts a '\n' to the line of text written to DOT
+   *
+   * @param str    the string to wrap
+   * @return String
+   */
+  public static String wrapWord(String str)
+    {
+    return WordUtils.wrap(str, 50, "\\n", false);
     }
 
   public static boolean isEmpty( String string )
