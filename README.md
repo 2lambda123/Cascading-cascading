@@ -1,4 +1,6 @@
 # Cascading
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2FCascading%2Fcascading.svg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2FCascading%2Fcascading?ref=badge_shield)
+
 
 Thanks for using Cascading.
 
@@ -226,3 +228,6 @@ For example, your job jar would look like this (via: `jar -t your.jar`)
 
 Hadoop will unpack the jar locally and remotely (in the cluster) and add any libraries in `lib` to the classpath. This
 is a feature specific to Hadoop.
+
+## License
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2FCascading%2Fcascading.svg?type=large)](https://app.fossa.io/projects/git%2Bgithub.com%2FCascading%2Fcascading?ref=badge_large)
