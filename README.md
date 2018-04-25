@@ -69,7 +69,7 @@ And alternative languages:
 
 And a third-party computing platform:
 
-* [Apache Flink](http://www.cascading.org/cascading-flink/) - Faster than MapReduce cluster computing
+* [Apache Flink](https://www.cascading.org/projects/flink/) - Faster than MapReduce cluster computing
 
 ## Versioning
 
