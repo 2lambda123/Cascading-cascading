@@ -49,7 +49,6 @@ public class JoinFailureTest extends PlatformTestCase {
     @Test
     @SuppressWarnings("rawtypes")
     public void testJoinFailure() throws Throwable {
-        fail("make sure this test is being run!");
         File workingDir = new File(WORKING_PATH_NAME + "testJoinFailure");
         File lhsDir = new File(workingDir, "lhs");
         File rhsDir = new File(workingDir, "rhs");
