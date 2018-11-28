@@ -165,6 +165,7 @@ public class TupleEntrySchemeIterator<Config, Input> extends TupleEntryIterator
     if( !hasWaiting && inputIterator.hasNext() )
       {
       sourceCall.setInput( wrapInput( inputIterator.next() ) );
+      scheme.sourcePrepare( flowProcess, sourceCall );
 
       return getNext();
       }
